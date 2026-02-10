@@ -1,0 +1,18 @@
+# LP Token logic (simplified ERC20-like)
+
+state = {
+    "totalSupply": 0,
+    "balances": {}
+}
+
+def mint(to, amount):
+    state["totalSupply"] += amount
+    state["balances"][to] = state["balances"].get(to, 0) + amount
+
+def burn(from_addr, amount):
+    assert state["balances"].get(from_addr, 0) >= amount, "Not enough LP"
+    state["balances"][from_addr] -= amount
+    state["totalSupply"] -= amount
+
+def balanceOf(addr):
+    return state["balances"].get(addr, 0)
