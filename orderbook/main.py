@@ -1,32 +1,43 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket
 from pydantic import BaseModel
+from engine import MatchingEngine, Order
+from ws import connect, disconnect, broadcast
 
 app = FastAPI()
+engine = MatchingEngine()
 
-orderbook = {
-    "PI/USDT": {
-        "bids": [[0.99, 1000], [0.98, 2000]],
-        "asks": [[1.01, 1500], [1.02, 3000]],
+class OrderReq(BaseModel):
+    side: str       # buy / sell
+    price: float = 0
+    amount: float
+    type: str = "limit"  # limit / market
+
+@app.post("/order")
+async def order(req: OrderReq):
+    order = Order(req.side, req.price, req.amount, req.type)
+    trades = engine.submit(order)
+
+    snap = engine.snapshot()
+    await broadcast({"type": "orderbook", "data": snap})
+    if trades:
+        await broadcast({"type": "trades", "data": trades})
+
+    return {"trades": trades}
+
+@app.get("/metrics")
+def metrics():
+    s = engine.snapshot()
+    return {
+        "bids": len(s["bids"]),
+        "asks": len(s["asks"]),
+        "last_price": s["trades"][-1]["price"] if s["trades"] else None
     }
-}
 
-class QuoteRequest(BaseModel):
-    tokenIn: str
-    tokenOut: str
-    amountIn: float
-
-@app.post("/quote")
-def quote(req: QuoteRequest):
-    pair = f"{req.tokenIn}/{req.tokenOut}"
-    ob = orderbook.get(pair)
-    if not ob:
-        return {"amountOut": 0, "price": 0}
-
-    best_ask = ob["asks"][0]
-    price = best_ask[0]
-    amount_out = req.amountIn / price
-    return {"amountOut": amount_out, "price": price}
-
-@app.get("/orderbook/{pair}")
-def get_orderbook(pair: str):
-    return orderbook.get(pair, {})
+@app.websocket("/ws")
+async def ws_endpoint(ws: WebSocket):
+    await connect(ws)
+    try:
+        while True:
+            await ws.receive_text()
+    except:
+        await disconnect(ws)
