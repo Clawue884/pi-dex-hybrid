@@ -1,0 +1,68 @@
+from math import sqrt, min
+import lp_token
+
+# AMM Pool State
+state = {
+    "reserveA": 0,
+    "reserveB": 0,
+    "fee": 30,  # 0.30%
+}
+
+def addLiquidity(provider, amountA, amountB):
+    assert amountA > 0 and amountB > 0, "Invalid liquidity"
+
+    if state["reserveA"] == 0 and state["reserveB"] == 0:
+        liquidity = sqrt(amountA * amountB)
+    else:
+        liquidity = min(
+            amountA * lp_token.state["totalSupply"] // state["reserveA"],
+            amountB * lp_token.state["totalSupply"] // state["reserveB"],
+        )
+
+    assert liquidity > 0, "Insufficient liquidity minted"
+
+    lp_token.mint(provider, liquidity)
+    state["reserveA"] += amountA
+    state["reserveB"] += amountB
+
+    return liquidity
+
+
+def removeLiquidity(provider, lpAmount):
+    assert lpAmount > 0, "Invalid LP amount"
+    totalSupply = lp_token.state["totalSupply"]
+
+    amountA = lpAmount * state["reserveA"] // totalSupply
+    amountB = lpAmount * state["reserveB"] // totalSupply
+
+    lp_token.burn(provider, lpAmount)
+    state["reserveA"] -= amountA
+    state["reserveB"] -= amountB
+
+    return amountA, amountB
+
+
+def getAmountOut(amountIn, reserveIn, reserveOut):
+    assert amountIn > 0 and reserveIn > 0 and reserveOut > 0
+    feeMultiplier = 10000 - state["fee"]
+    amountInWithFee = amountIn * feeMultiplier
+    numerator = amountInWithFee * reserveOut
+    denominator = reserveIn * 10000 + amountInWithFee
+    return numerator // denominator
+
+
+def swap(trader, amountIn, tokenIn):
+    if tokenIn == "A":
+        amountOut = getAmountOut(amountIn, state["reserveA"], state["reserveB"])
+        state["reserveA"] += amountIn
+        state["reserveB"] -= amountOut
+        return {"to": trader, "token": "B", "amount": amountOut}
+
+    elif tokenIn == "B":
+        amountOut = getAmountOut(amountIn, state["reserveB"], state["reserveA"])
+        state["reserveB"] += amountIn
+        state["reserveA"] -= amountOut
+        return {"to": trader, "token": "A", "amount": amountOut}
+
+    else:
+        assert False, "Invalid token"
