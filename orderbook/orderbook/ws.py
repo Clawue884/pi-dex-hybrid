@@ -9,6 +9,6 @@ async def connect(ws: WebSocket):
 async def disconnect(ws: WebSocket):
     clients.remove(ws)
 
-async def broadcast(data: dict):
-    for ws in clients:
+async def broadcast(data):
+    for ws in list(clients):
         await ws.send_json(data)
