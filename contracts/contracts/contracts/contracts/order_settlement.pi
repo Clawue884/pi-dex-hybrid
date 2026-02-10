@@ -1,0 +1,34 @@
+# Hybrid CLOB → On-chain Settlement Logic
+
+state = {
+    "orders": {},
+    "trades": {}
+}
+
+def placeOrder(orderId, user, side, amount, price):
+    state["orders"][orderId] = {
+        "user": user,
+        "side": side,
+        "amount": amount,
+        "price": price,
+        "filled": 0
+    }
+
+def settleOrder(tradeId, maker, taker, amount, price):
+    # Record trade on-chain
+    state["trades"][tradeId] = {
+        "maker": maker,
+        "taker": taker,
+        "amount": amount,
+        "price": price,
+        "value": amount * price
+    }
+
+    # Return settlement instruction
+    return {
+        "from": taker,
+        "to": maker,
+        "amount": amount * price,
+        "asset": "PI",
+        "memo": f"DEX Trade {tradeId}"
+    }
