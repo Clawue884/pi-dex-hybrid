@@ -88,9 +88,9 @@ Recommended DNS setup:
 Service
 Domain
 Frontend
-https://dex.pi-hybrid.org�
+https://dex.pi-hybrid.org
 API
-https://api.pi-hybrid.org�
+https://api.pi-hybrid.org
 
 🤝 Contributing
 Fork the repo
