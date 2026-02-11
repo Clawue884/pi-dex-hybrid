@@ -62,23 +62,27 @@ git clone https://github.com/Clawue884/pi-dex-hybrid.git
 cd pi-dex-hybrid
 docker compose up --build
 App will run on:
-Frontend → http://localhost:5173�
-AMM API → http://localhost:3001�
-Orderbook → http://localhost:8000�
+Frontend → http://localhost:5173
+AMM API → http://localhost:3001
+Orderbook → http://localhost:8000
+
 🌍 Deploy to Production (VPS)
-1️⃣ Server Setup
+ Server Setup
 On your VPS (DigitalOcean / Hetzner / Ubuntu):
 sudo apt update && sudo apt install docker docker-compose -y
-2️⃣ Clone Repo
+
+ Clone Repo
 git clone https://github.com/Clawue884/pi-dex-hybrid.git
 cd pi-dex-hybrid/deploy
-3️⃣ Setup Environment
+
+ Setup Environment
 Create .env.prod (DO NOT COMMIT):
 NODE_ENV=production
 PI_NETWORK=mainnet
 PI_APP_ID=your_real_pi_app_id_here
 4️⃣ Run Production Stack
 docker compose -f docker-compose.prod.yml up -d --build
+
 🌐 Domains
 Recommended DNS setup:
 Service
@@ -87,6 +91,7 @@ Frontend
 https://dex.pi-hybrid.org�
 API
 https://api.pi-hybrid.org�
+
 🤝 Contributing
 Fork the repo
 Create feature branch
@@ -96,8 +101,10 @@ git commit -m "feat: add my feature"
 Push
 git push origin feat/my-feature
 Open Pull Request
+
 📜 License
 MIT © Clawue884
+
 🌍 Community
 Ideas, issues, and PRs are welcome.
 This project is community-driven for the Pi ecosystem.
