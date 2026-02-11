@@ -66,3 +66,4 @@ def swap(trader, amountIn, tokenIn):
 
     else:
         assert False, "Invalid token"
+
