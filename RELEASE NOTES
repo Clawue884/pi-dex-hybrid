@@ -1,0 +1,63 @@
+📦 RELEASE NOTES
+🏷 v0.1.0-alpha
+Title:
+Pi DEX Hybrid – Core Infrastructure Alpha
+🚀 Overview
+v0.1.0-alpha adalah rilis awal dari Pi-Native Hybrid DEX Infrastructure, mencakup fondasi arsitektur untuk:
+Deterministic ledger engine
+Hybrid Router (AMM + CLOB-ready)
+zk-rollup style state aggregation
+Validator staking & slashing
+MEV guard batch processing
+Encrypted mempool
+P2P gossip network
+Pi-native bridge anchor
+Release ini ditujukan untuk:
+Arsitektur validasi
+Audit awal
+Developer integration preview
+Validator onboarding testing
+⚠ Status: Alpha (Not production ready)
+🧠 Core Modules Included
+🥇 Security Layer
+Deterministic state hashing
+Signature validation (ed25519/secp)
+Anti-replay nonce protection
+Validator quorum threshold logic
+🥈 Settlement + Ledger
+Deterministic ledger sync
+Batch settlement worker
+Block producer loop
+zk-state root aggregation hook
+🥉 Router + Execution
+Hybrid Router (AMM-compatible)
+Parallel matching engine (CLOB-ready)
+MEV guard batcher
+Encrypted intent mempool
+🔐 Consensus (Experimental)
+RAFT-style validator coordination
+Tendermint-style finality simulation
+Slashing logic for malicious validator
+🌉 Pi-Native Bridge (Anchor Model)
+Proof root anchoring
+Validator multi-signature verification
+Pi transaction builder abstraction
+📊 Architecture Goals
+Deterministic state transition
+zk-compatible rollup structure
+Modular execution engine
+Pi-chain anchor compatibility
+Horizontal validator scaling
+
+
+📁 Repository Structure Snapshot
+/consensus
+/ledger
+/router
+/matching-engine
+/mev-guard
+/zk-rollup
+/bridge
+/validators
+/p2p
+/docs
